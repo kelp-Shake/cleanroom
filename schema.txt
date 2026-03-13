@@ -1,0 +1,28 @@
+area 
+area.id (int, PK)
+area.name = (varchar not null)
+
+task_type 
+task_type.id (int)
+task_type.name = (varchar)
+task_type.desc = (text)
+
+task 
+task.id (int)
+task.name = (varchar)
+task.area.id (from area)
+task.task_type.id (from task_type)
+task.parent_task.id (???)
+task.is_active = (bool)
+task.created_at (datetime)
+
+schedule 
+schedule.id = (int, PK)
+schedule.task.id (from tasks)
+schedule.start_date (datetime)
+schedule.day_freq (string map to int for day)
+schedule.time (time, default = 9am)
+schedule.due_date (datetime)
+schedule.last_complete (datetime)
+
+
