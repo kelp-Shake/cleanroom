@@ -6,7 +6,6 @@ class UserCreate(BaseModel):
     
 class UserResponse(BaseModel):
     name: str | None
-    
     model_config = ConfigDict(from_attributes=True)
 
 # class AreaCreate(BaseModel):

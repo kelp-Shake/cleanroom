@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import dataclass_transform
 import enum
-from sqlalchemy import Text, String, ForeignKey, DateTime, Time,  UniqueConstraint, func, CheckConstraint
+from sqlalchemy import Text, String, ForeignKey, DateTime, Time, func
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 from datetime import datetime, time
 
@@ -20,20 +20,25 @@ class SCHEDULESTATUS(enum.Enum):
     PAUSED = 'PAUSED'
     COMPLETED = "COMPLETED"
     EXPIRED = "EXPIRED"
-
+class ROLES(enum.Enum):
+    OWNER = "OWNER"
+    MEMBER = "MEMBER"
 
 class AreaUser(Base):
     __tablename__ = "area_users"
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     area_id: Mapped[int] = mapped_column(ForeignKey("areas.id"), primary_key=True)
-    role: Mapped[str] = mapped_column(String(255), default="member")
+    role: Mapped[ROLES] = mapped_column(default=ROLES.MEMBER)
+
+class AreaTaskGroup(Base):
+    __tablename__ = "area_task_groups"
+    area_id: Mapped[int] = mapped_column(ForeignKey("areas.id"), primary_key=True)
+    task_group_id: Mapped[int] = mapped_column(ForeignKey("task_groups.id"), primary_key=True)
 
 class User(Base):
     __tablename__ = "users"
-    # __table_args__ = (CheckConstraint("auth0_id IS NOT NULL OR discord_id IS NOT NULL", name="ck_user_has_one_identity"),)
     id: Mapped[int] = mapped_column(primary_key=True)
     auth0_id: Mapped[str] = mapped_column(String(255), unique=True)
-    #discord_id: Mapped[str | None] = mapped_column(String(255), unique=True)
     name: Mapped[str] = mapped_column(String(255), unique=True)
     areas: Mapped[list[Area]] = relationship(secondary="area_users", back_populates="users")
 
@@ -44,15 +49,17 @@ class Area(Base):
     name: Mapped[str] = mapped_column(String(255))
     users: Mapped[list[User]] = relationship(secondary="area_users", back_populates="areas")
     area_tasks: Mapped[list[AreaTask]] = relationship(back_populates="area", cascade="all, delete-orphan")
+    task_groups: Mapped[list[TaskGroup]] = relationship(secondary="area_task_groups", back_populates="areas")  
+
 
 class TaskGroup(Base):
     __tablename__ = "task_groups"
-    __table_args__ = (UniqueConstraint("name", "area_id", name="uq_taskgroup_name_per_area"),)
     id: Mapped[int] = mapped_column(primary_key=True)
-    area_id: Mapped[int] = mapped_column(ForeignKey("areas.id"))
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     name: Mapped[str] = mapped_column(String(255))
     desc: Mapped[str | None] = mapped_column(Text)
     area_tasks: Mapped[list[AreaTask]] = relationship(back_populates="task_group")
+    areas: Mapped[list[Area]] = relationship(secondary="area_task_groups", back_populates="task_groups")
 
 class AreaTask(Base):
     __tablename__ = "area_tasks"

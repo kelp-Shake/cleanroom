@@ -1,13 +1,13 @@
-# .DS_Store
-# .env
-# .vscode
-# alembic.ini 
-# testapi.py
-# testtock.py
-# venv
-# alembic
-# app/services
-# app/__pycache__
-# cleanroom.db
-# app/tab.py
-# .gitignore
+.DS_Store
+.env
+.vscode
+alembic.ini 
+testapi.py
+testtock.py
+venv
+alembic
+app/services
+app/__pycache__
+cleanroom.db
+app/tab.py
+.gitignore
