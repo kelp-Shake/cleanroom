@@ -1,17 +1,24 @@
 from pydantic import BaseModel, ConfigDict
-from datetime import datetime
+
 
 class UserCreate(BaseModel):
     name: str
     
 class UserResponse(BaseModel):
-    name: str | None
+    name: str 
     model_config = ConfigDict(from_attributes=True)
 
-# class AreaCreate(BaseModel):
-#     name: str
-# class AreaResponse(BaseModel):
-#     pass
-# class TaskGroupCreate(BaseModel):
-#     name: str 
+class AreaCreate(BaseModel):
+    name: str
+
+class AreaResponse(BaseModel):
+    id: int
+    name: str 
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TaskGroupCreate(BaseModel):
+    task_id: int
+    owner_id: int
+    name: str 
 

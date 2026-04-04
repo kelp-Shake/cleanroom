@@ -1,10 +1,11 @@
 from fastapi import Depends, FastAPI
 from app.auth import auth0
-from app.routers import router as user_router
+from app.user_routers import user_router
+from app.area_router import area_router
 
 appy = FastAPI()
 appy.include_router(user_router, prefix="/users", tags = ["users"])
-
+appy.include_router(area_router, prefix="/areas", tags = ["area"])
 
 @appy.get("/api/public")
 async def public():

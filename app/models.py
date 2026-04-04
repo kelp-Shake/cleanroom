@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import dataclass_transform
 import enum
-from sqlalchemy import Text, String, ForeignKey, DateTime, Time, func
+from sqlalchemy import Text, String, ForeignKey, DateTime, Time, func, Index
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 from datetime import datetime, time
 
@@ -29,6 +29,7 @@ class AreaUser(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     area_id: Mapped[int] = mapped_column(ForeignKey("areas.id"), primary_key=True)
     role: Mapped[ROLES] = mapped_column(default=ROLES.MEMBER)
+    __table_args__ = (Index("index_area_user_id", "user_id"), )
 
 class AreaTaskGroup(Base):
     __tablename__ = "area_task_groups"
@@ -50,7 +51,6 @@ class Area(Base):
     users: Mapped[list[User]] = relationship(secondary="area_users", back_populates="areas")
     area_tasks: Mapped[list[AreaTask]] = relationship(back_populates="area", cascade="all, delete-orphan")
     task_groups: Mapped[list[TaskGroup]] = relationship(secondary="area_task_groups", back_populates="areas")  
-
 
 class TaskGroup(Base):
     __tablename__ = "task_groups"
@@ -76,6 +76,7 @@ class AreaTask(Base):
     task_group: Mapped[TaskGroup | None] = relationship(back_populates="area_tasks")
     parent_task: Mapped[AreaTask | None] = relationship(back_populates="subtasks", remote_side=[id])
     subtasks: Mapped[list[AreaTask]] = relationship(back_populates="parent_task", cascade="all, delete-orphan")
+    __table_args__ = (Index("index_area_task_id", "area_id"), Index("index_area_task_group_id", "task_group_id"),)
 
 class Schedule(Base):
     __tablename__ = "schedules"
@@ -91,3 +92,4 @@ class Schedule(Base):
     next_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     complete_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     area_task: Mapped[AreaTask] = relationship(back_populates="schedule")
+    __table_args__ = (Index("index_schedule_id", "area_task_id"),)

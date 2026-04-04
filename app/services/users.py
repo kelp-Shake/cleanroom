@@ -5,8 +5,6 @@ from app.models import User
 from app.auth import currUser, claims
 from app.schemas import UserCreate
 
-
-# post: create
 def create_user(db: db, claims: claims, createUser: UserCreate) -> User:
     auth_id = claims.get("sub")
     state = select(User).where(User.auth0_id == auth_id)
