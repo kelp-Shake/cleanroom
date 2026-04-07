@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from app.db import curr_session as db
-from auth import currUser
 from app.models import User, Area
+from app.auth import currUser
 from app.schemas import UserResponse, AreaCreate, AreaResponse
 from app.services.areas import create_area, get_area, get_user_areas, get_area_user_members, get_user_areauser, get_area_user, add_area_users, remove_area_users, delete_area
 

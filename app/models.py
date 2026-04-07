@@ -13,13 +13,13 @@ class TASKSTATUS(enum.Enum):
     NEEDS_ACTION = "NEEDS-ACTION"
     IN_PROCESS = "IN-PROCESS"
     COMPLETED = "COMPLETED"
-    CANCELLED = "CANCELLED" 
     
 class SCHEDULESTATUS(enum.Enum):
     ACTIVE = "ACTIVE"
     PAUSED = 'PAUSED'
     COMPLETED = "COMPLETED"
     EXPIRED = "EXPIRED"
+
 class ROLES(enum.Enum):
     OWNER = "OWNER"
     MEMBER = "MEMBER"
@@ -85,8 +85,6 @@ class Schedule(Base):
     rrule: Mapped[str | None] = mapped_column(String(255))
     status: Mapped[SCHEDULESTATUS] = mapped_column(default=SCHEDULESTATUS.ACTIVE) 
     recurring: Mapped[bool] = mapped_column(default=False)
-    c_provider: Mapped[str | None] = mapped_column(String(255))
-    c_eventid: Mapped[str | None] = mapped_column(String(255))
     start_date: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     due_time: Mapped[time] = mapped_column(Time, server_default="09:00:00")
     next_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

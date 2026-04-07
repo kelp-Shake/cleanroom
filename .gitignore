@@ -5,9 +5,7 @@ alembic.ini
 testapi.py
 testtock.py
 venv
-alembic
-app/services
+alembic/env.py
 app/__pycache__
-cleanroom.db
 app/tab.py
 .gitignore
